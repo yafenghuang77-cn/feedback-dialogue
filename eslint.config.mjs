@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import vitest from '@vitest/eslint-plugin';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import prettier from 'eslint-config-prettier/flat';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
@@ -23,6 +24,10 @@ export default defineConfig([
   {
     files: codeFiles,
     extends: [js.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
     linterOptions: { reportUnusedDisableDirectives: 'error' },
     plugins: { 'simple-import-sort': simpleImportSort },
     rules: {
@@ -76,7 +81,7 @@ export default defineConfig([
             ['^@/'],
             ['^\\.\\.(?:/|$)'],
             ['^\\./'],
-            ['^\\u0000.*\\.(?:css|less)(?:[?#].*)?$'],
+            ['^\\u0000.*\\.(?:css|less|scss)(?:[?#].*)?$'],
           ],
         },
       ],
@@ -119,7 +124,13 @@ export default defineConfig([
     },
   },
   {
-    files: ['src/**/*.{ts,tsx,mts,cts}', 'config/**/*.{ts,mts,cts}'],
+    files: [
+      'src/**/*.{ts,tsx,mts,cts}',
+      'config/**/*.{ts,mts,cts}',
+      'knip.config.ts',
+      'tests/**/*.{ts,tsx,mts,cts}',
+      'vitest.config.mts',
+    ],
     languageOptions: {
       parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
     },
@@ -180,13 +191,23 @@ export default defineConfig([
     languageOptions: { globals: { defineAppConfig: 'readonly', definePageConfig: 'readonly' } },
   },
   {
-    files: ['*.config.{js,mjs,cjs}', 'config/**/*.ts'],
+    files: [
+      '*.{js,mjs,cjs,ts,mts,cts}',
+      '**/*.config.{js,mjs,cjs,ts,mts,cts}',
+      'config/**/*.{js,mjs,cjs,ts,mts,cts}',
+      'tests/**/*.{js,mjs,cjs,ts,mts,cts}',
+    ],
     languageOptions: { globals: globals.nodeBuiltin },
     rules: { 'no-console': 'off' },
   },
   {
     files: ['babel.config.js'],
     languageOptions: { sourceType: 'commonjs' },
+  },
+  {
+    files: ['tests/lint-config.test.mjs', 'tests/unit/**/*.{test,spec}.{js,mjs,ts,mts}'],
+    extends: [vitest.configs.recommended],
+    rules: { 'vitest/valid-expect': ['error', { maxArgs: 2 }] },
   },
   prettier,
 ]);

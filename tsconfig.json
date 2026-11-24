@@ -1,32 +1,5 @@
 {
-  "compilerOptions": {
-    "target": "es2017",
-    "module": "preserve",
-    "removeComments": false,
-    "preserveConstEnums": true,
-    "moduleResolution": "bundler",
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "outDir": "lib",
-    "strict": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "rootDir": ".",
-    "jsx": "react-jsx",
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "typeRoots": ["node_modules/@types"],
-    "paths": {
-      // TS5090 leading './'
-      "@/*": ["./src/*"]
-    }
-  },
-  "include": ["./src", "./types", "./config"],
-  "compileOnSave": false
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
