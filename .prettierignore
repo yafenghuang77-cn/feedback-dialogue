@@ -1,0 +1,8 @@
+dist/
+lib/
+.temp/
+.rn_temp/
+.swc/
+deploy_versions/
+.husky/_/
+pnpm-lock.yaml

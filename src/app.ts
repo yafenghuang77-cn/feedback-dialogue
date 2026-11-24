@@ -1,17 +1,9 @@
-import { PropsWithChildren } from 'react'
-import { useLaunch } from '@tarojs/taro'
+import './app-html-styles';
 
-import './app.less'
+import type { PropsWithChildren } from 'react';
 
-function App({ children }: PropsWithChildren<any>) {
-  useLaunch(() => {
-    console.log('App launched.')
-  })
-
-  // children 是将要会渲染的页面
-  return children
+function App({ children }: PropsWithChildren) {
+  return children;
 }
-  
 
-
-export default App
+export default App;

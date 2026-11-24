@@ -1,0 +1,12 @@
+{
+  "ignores": [
+    "**/node_modules/**",
+    "dist/**",
+    "lib/**",
+    ".temp/**",
+    ".rn_temp/**",
+    ".swc/**",
+    "deploy_versions/**",
+    ".husky/_/**",
+  ],
+}
