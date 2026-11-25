@@ -1,15 +1,36 @@
 import type { UserConfigExport } from '@tarojs/cli';
 
+const excludedPackages = new Set([
+  '@babel',
+  'core-js',
+  'style-loader',
+  'css-loader',
+  'react',
+  'react-dom',
+]);
+
 export default {
   mini: {},
+  ...(process.env['TARO_ENV'] === 'h5' && {
+    terser: {
+      enable: true,
+      config: {
+        keep_fnames: false,
+        compress: { passes: 2 },
+        output: { quote_keys: false, keep_quoted_props: false },
+      },
+    },
+  }),
   h5: {
     compile: {
       include: [
-        // 确保产物为 es5
-        (filename: string) =>
-          /node_modules\/(?!(@babel|core-js|style-loader|css-loader|react|react-dom))/.test(
-            filename,
-          ),
+        (filename: string) => {
+          // pnpm 的真实路径可能包含多层 node_modules，以最内层的包名为准。
+          const segments = filename.split(/[\\/]/);
+          const index = segments.lastIndexOf('node_modules');
+          const packageName = segments[index + 1];
+          return index >= 0 && !!packageName && !excludedPackages.has(packageName);
+        },
       ],
     },
     /**

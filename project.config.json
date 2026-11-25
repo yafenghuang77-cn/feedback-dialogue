@@ -1,5 +1,5 @@
 {
-  "miniprogramRoot": "./dist",
+  "miniprogramRoot": "./dist/weapp/feedback-dialogue/",
   "projectname": "feedback-dialogue",
   "description": "",
   "appid": "touristappid",

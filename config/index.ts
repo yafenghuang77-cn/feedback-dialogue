@@ -18,7 +18,7 @@ export default defineConfig<'webpack5'>(async (merge) => {
       828: 1.81 / 2,
     },
     sourceRoot: 'src',
-    outputRoot: 'dist',
+    outputRoot: `dist/${process.env['TARO_ENV']}/feedback-dialogue`,
     plugins: ['@tarojs/plugin-generator', '@tarojs/plugin-html', '@tarojs/plugin-http'],
     defineConstants: {},
     copy: {
@@ -49,16 +49,17 @@ export default defineConfig<'webpack5'>(async (merge) => {
       },
     },
     h5: {
+      useHtmlComponents: true,
       publicPath: '/',
       staticDirectory: 'static',
       output: {
-        filename: 'js/[name].[hash:8].js',
-        chunkFilename: 'js/[name].[chunkhash:8].js',
+        filename: 'js/[name].[contenthash:8].js',
+        chunkFilename: 'js/[name].[contenthash:8].js',
       },
       miniCssExtractPluginOption: {
         ignoreOrder: true,
-        filename: 'css/[name].[hash].css',
-        chunkFilename: 'css/[name].[chunkhash].css',
+        filename: 'css/[name].[contenthash:8].css',
+        chunkFilename: 'css/[name].[contenthash:8].css',
       },
       postcss: {
         autoprefixer: {
@@ -75,6 +76,22 @@ export default defineConfig<'webpack5'>(async (merge) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin);
+        if (process.env.NODE_ENV === 'production') {
+          chain.performance.maxEntrypointSize(410 * 1024);
+          chain.optimization.merge({
+            moduleIds: 'size',
+            splitChunks: {
+              cacheGroups: {
+                react: {
+                  test: /[\\/]node_modules[\\/](?:react|react-dom|scheduler)[\\/]/,
+                  name: 'react',
+                  chunks: 'initial',
+                  enforce: true,
+                },
+              },
+            },
+          });
+        }
       },
     },
   };
