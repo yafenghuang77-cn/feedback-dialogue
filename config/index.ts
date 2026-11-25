@@ -1,9 +1,16 @@
 import type { UserConfigExport } from '@tarojs/cli';
 import { defineConfig } from '@tarojs/cli';
+import CompressionPlugin from 'compression-webpack-plugin';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 
 import devConfig from './dev';
 import prodConfig from './prod';
+
+// H5 生产构建的 gzip 选项
+const h5Gzip = {
+  enabled: true, // 生成 .gz 文件
+  keepOriginalAssets: false, // 同时保留未压缩的原文件
+};
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge) => {
@@ -77,6 +84,16 @@ export default defineConfig<'webpack5'>(async (merge) => {
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin);
         if (process.env.NODE_ENV === 'production') {
+          if (h5Gzip.enabled) {
+            chain.plugin('gzip').use(CompressionPlugin, [
+              {
+                algorithm: 'gzip',
+                test: /\.(?:html|js|css|json|svg|txt)$/i,
+                minRatio: Infinity,
+                deleteOriginalAssets: !h5Gzip.keepOriginalAssets,
+              },
+            ]);
+          }
           chain.performance.maxEntrypointSize(410 * 1024);
           chain.optimization.merge({
             moduleIds: 'size',
